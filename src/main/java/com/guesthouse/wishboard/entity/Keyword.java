@@ -21,6 +21,9 @@ public class Keyword {
     @Column(name = "notification", nullable = false)
     private boolean notification;
 
+    @Column(name = "user_id", nullable = false)
+    private String userId;
+    
     @ManyToOne
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private User user;

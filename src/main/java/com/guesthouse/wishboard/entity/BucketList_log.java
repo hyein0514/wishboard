@@ -25,6 +25,9 @@ public class BucketList_log {
     @Column(name = "content", nullable = false)
     private String content;
 
+    @Column(name = "bucket_id", nullable = false)
+    private Long bucketId;
+    
     @ManyToOne
     @JoinColumn(name = "bucket_id", insertable = false, updatable = false)
     private BucketList bucketList;

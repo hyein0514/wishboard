@@ -48,6 +48,9 @@ public class BucketList {
 
     @Column(name = "created_at", nullable = false)
     private Date createdAt;
+    
+    @Column(name = "user_id", nullable = false)
+    private String userId;
 
     @ManyToOne
     @JoinColumn(name = "user_id", insertable = false, updatable = false)

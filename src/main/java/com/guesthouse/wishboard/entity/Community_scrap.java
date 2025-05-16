@@ -19,6 +19,9 @@ public class Community_scrap {
     @Column(name = "community_name", nullable = false)
     private String communityName;
 
+    @Column(name = "user_id", nullable = false)
+    private String userId;
+    
     @ManyToOne
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private User user;

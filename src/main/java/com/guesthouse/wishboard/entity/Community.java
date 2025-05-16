@@ -33,6 +33,9 @@ public class Community {
 
     @Column(name = "community_diversity", nullable = false)
     private String communityDiversity;
+    
+    @Column(name = "bucket_id", nullable = false)
+    private Long bucketId;
 
     @ManyToOne
     @JoinColumn(name = "bucket_id", insertable = false, updatable = false)

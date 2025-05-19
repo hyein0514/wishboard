@@ -14,7 +14,7 @@ public class Comment_like {
 
     @Id
     @Column(name = "user_id", nullable = false)
-    private String userId;
+    private Long userId;
 
     @Id
     @Column(name = "comment_id", nullable = false)

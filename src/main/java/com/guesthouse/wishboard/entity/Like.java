@@ -14,10 +14,10 @@ public class Like {
 
     @Id
     @Column(name = "user_id", nullable = false)
-    private String userId;
+    private Long userId;
 
     @Id
-    @Column(name = "community_id", nullable = false)
+    @Column(name = "user_id", nullable = false)
     private Long communityId;
 
     @ManyToOne

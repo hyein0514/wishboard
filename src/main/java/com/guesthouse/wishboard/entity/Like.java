@@ -17,7 +17,7 @@ public class Like {
     private Long userId;
 
     @Id
-    @Column(name = "user_id", nullable = false)
+    @Column(name = "community_id", nullable = false)
     private Long communityId;
 
     @ManyToOne

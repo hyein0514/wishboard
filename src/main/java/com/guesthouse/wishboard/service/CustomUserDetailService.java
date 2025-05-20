@@ -22,13 +22,11 @@ public class CustomUserDetailService implements UserDetailsService{
             //DB에서 조회
             User userData = userRepository.findAllByUserId(userId);
 
-            if (userData != null) {
-
-                //UserDetails에 담아서 return하면 AutneticationManager가 검증 함
-                return new CustomUserDetail(userData);
+            if (userData == null) {
+                throw new UsernameNotFoundException("해당 사용자를 찾을 수 없습니다: " + userId);
             }
 
-            return null;
+            return new CustomUserDetail(userData);
         }
 
     }

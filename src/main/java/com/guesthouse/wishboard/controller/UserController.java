@@ -1,6 +1,7 @@
 package com.guesthouse.wishboard.controller;
 
 import com.guesthouse.wishboard.dto.UserDTO;
+import com.guesthouse.wishboard.entity.User;
 import com.guesthouse.wishboard.global.ApiResponsTemplate;
 import com.guesthouse.wishboard.service.JoinService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,9 +29,9 @@ public class UserController {
         @PostMapping("/user")
         public ResponseEntity<ApiResponsTemplate<?>> createUser(@RequestBody UserDTO userDTO) {
             try {
-                joinService.joinProcess(userDTO);
+                User savedUser = joinService.joinProcess(userDTO);
 
-                return ResponseEntity.ok(ApiResponsTemplate.success(null));
+                return ResponseEntity.ok(ApiResponsTemplate.success(savedUser));
             } catch (Exception e) {
                 log.error("회원가입 실패", e);
                 return ResponseEntity.status(400).body(new ApiResponsTemplate<>("UPLOAD_FAILED", e.getMessage(), null));

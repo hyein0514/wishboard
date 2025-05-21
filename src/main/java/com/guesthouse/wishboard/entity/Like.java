@@ -6,10 +6,10 @@ import lombok.*;
 @Entity
 @Table(name = "`like`") // like는 MySQL 예약어이기 때문에 `like`로 감싸는 것이 안전
 @IdClass(Like_id.class)
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Setter
 public class Like {
 
     @Id
@@ -17,7 +17,8 @@ public class Like {
     private Long userId;
 
     @Id
-    @Column(name = "community_id", nullable = false)
+    @MapsId("communityId") // 복합키의 일부
+    @JoinColumn(name = "community_id")
     private Long communityId;
 
     @ManyToOne

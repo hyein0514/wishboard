@@ -4,11 +4,11 @@ import lombok.*;
 
 @Entity
 @Table(name = "user")
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
+@Setter
 public class User {
 
     @Id

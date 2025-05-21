@@ -1,5 +1,6 @@
 package com.guesthouse.wishboard.controller;
 
+import com.guesthouse.wishboard.dto.MyPageDTO;
 import com.guesthouse.wishboard.dto.UserDTO;
 import com.guesthouse.wishboard.entity.Notification;
 import com.guesthouse.wishboard.entity.User;
@@ -55,6 +56,34 @@ public class UserController {
         public ResponseEntity<ApiResponsTemplate<List<Notification>>> selectAlam(@AuthenticationPrincipal CustomUserDetail users) {
             try {
                 return ResponseEntity.ok(ApiResponsTemplate.success(joinService.selectAlam(users)));
+            } catch (Exception e) {
+                return ResponseEntity.status(500).body(new ApiResponsTemplate<>("UPLOAD_FAILED", e.getMessage(), null));
+            }
+        }
+
+        @GetMapping("/mycomment")
+        public ResponseEntity<ApiResponsTemplate<List<MyPageDTO>>> selectComment(@AuthenticationPrincipal CustomUserDetail users) {
+            try {
+                return ResponseEntity.ok(ApiResponsTemplate.success(joinService.selectCommunityByCommnet(users)));
+            } catch (Exception e) {
+                return ResponseEntity.status(500).body(new ApiResponsTemplate<>("UPLOAD_FAILED", e.getMessage(), null));
+            }
+        }
+
+
+        @GetMapping("/myLike")
+        public ResponseEntity<ApiResponsTemplate<List<MyPageDTO>>> selectLike(@AuthenticationPrincipal CustomUserDetail users) {
+            try {
+                return ResponseEntity.ok(ApiResponsTemplate.success(joinService.selectCommunityByLike(users)));
+            } catch (Exception e) {
+                return ResponseEntity.status(500).body(new ApiResponsTemplate<>("UPLOAD_FAILED", e.getMessage(), null));
+            }
+        }
+
+        @GetMapping("/myWrite")
+        public ResponseEntity<ApiResponsTemplate<List<MyPageDTO>>> selectWrite(@AuthenticationPrincipal CustomUserDetail users) {
+            try {
+                return ResponseEntity.ok(ApiResponsTemplate.success(joinService.selectCommunityByWrite(users)));
             } catch (Exception e) {
                 return ResponseEntity.status(500).body(new ApiResponsTemplate<>("UPLOAD_FAILED", e.getMessage(), null));
             }

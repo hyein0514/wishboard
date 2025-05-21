@@ -25,4 +25,9 @@ public class Community_scrap {
     @ManyToOne
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private User user;
+
+    public Community_scrap(String communityName, User user) {
+        this.communityName = communityName;
+        this.user = user;
+    }
 }

@@ -1,16 +1,19 @@
 package com.guesthouse.wishboard.controller;
 
+import com.guesthouse.wishboard.dto.MyPageDTO;
 import com.guesthouse.wishboard.dto.UserDTO;
+import com.guesthouse.wishboard.entity.Notification;
 import com.guesthouse.wishboard.entity.User;
 import com.guesthouse.wishboard.global.ApiResponsTemplate;
-import com.guesthouse.wishboard.service.JoinService;
+import com.guesthouse.wishboard.jwt.CustomUserDetail;
+import com.guesthouse.wishboard.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @Tag(name = "UserController",description = "로그인, 회원가입 관련 API")
@@ -19,10 +22,10 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class UserController {
 
-        private final JoinService joinService;
+        private final UserService joinService;
 
 
-    public UserController(JoinService joinService) {
+    public UserController(UserService joinService) {
             this.joinService = joinService;
         }
 
@@ -34,24 +37,57 @@ public class UserController {
                 return ResponseEntity.ok(ApiResponsTemplate.success(savedUser));
             } catch (Exception e) {
                 log.error("회원가입 실패", e);
-                return ResponseEntity.status(400).body(new ApiResponsTemplate<>("UPLOAD_FAILED", e.getMessage(), null));
+                return ResponseEntity.status(500).body(new ApiResponsTemplate<>("UPLOAD_FAILED", e.getMessage(), null));
             }
         }
 
 
-//        @PostMapping("/preferences")
-//        public ResponseEntity<ApiResponseTemplate<UserDTO>> updateUserPreferences(@RequestBody UserPreferencesDTO dto) {
-//            try {
-//                UserDTO updatedUser = joinService.updateUserPreferences(dto);
-//                return ResponseEntity.ok(ApiResponseTemplate.success(SuccessCode.CREATED, updatedUser));
-//            } catch (IllegalArgumentException e) {
-//                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-//                        .body(ApiResponseTemplate.error(ErrorCode.NOT_FOUND));
-//            } catch (Exception e) {
-//                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                        .body(ApiResponseTemplate.error(ErrorCode.INTERNAL_SERVER_ERROR));
-//            }
-//        }
+        @PostMapping("/update")
+        public ResponseEntity<ApiResponsTemplate<?>> updateUserPreferences(@RequestBody UserDTO dto, @AuthenticationPrincipal CustomUserDetail users) {
+            try {
+                joinService.updateUserPreferences(dto,users);
+                return ResponseEntity.ok(ApiResponsTemplate.success(200));
+            } catch (Exception e) {
+               return ResponseEntity.status(500).body(new ApiResponsTemplate<>("UPLOAD_FAILED", e.getMessage(), null));
+            }
+        }
+
+        @GetMapping("/selectAlam")
+        public ResponseEntity<ApiResponsTemplate<List<Notification>>> selectAlam(@AuthenticationPrincipal CustomUserDetail users) {
+            try {
+                return ResponseEntity.ok(ApiResponsTemplate.success(joinService.selectAlam(users)));
+            } catch (Exception e) {
+                return ResponseEntity.status(500).body(new ApiResponsTemplate<>("UPLOAD_FAILED", e.getMessage(), null));
+            }
+        }
+
+        @GetMapping("/mycomment")
+        public ResponseEntity<ApiResponsTemplate<List<MyPageDTO>>> selectComment(@AuthenticationPrincipal CustomUserDetail users) {
+            try {
+                return ResponseEntity.ok(ApiResponsTemplate.success(joinService.selectCommunityByCommnet(users)));
+            } catch (Exception e) {
+                return ResponseEntity.status(500).body(new ApiResponsTemplate<>("UPLOAD_FAILED", e.getMessage(), null));
+            }
+        }
+
+
+        @GetMapping("/myLike")
+        public ResponseEntity<ApiResponsTemplate<List<MyPageDTO>>> selectLike(@AuthenticationPrincipal CustomUserDetail users) {
+            try {
+                return ResponseEntity.ok(ApiResponsTemplate.success(joinService.selectCommunityByLike(users)));
+            } catch (Exception e) {
+                return ResponseEntity.status(500).body(new ApiResponsTemplate<>("UPLOAD_FAILED", e.getMessage(), null));
+            }
+        }
+
+        @GetMapping("/myWrite")
+        public ResponseEntity<ApiResponsTemplate<List<MyPageDTO>>> selectWrite(@AuthenticationPrincipal CustomUserDetail users) {
+            try {
+                return ResponseEntity.ok(ApiResponsTemplate.success(joinService.selectCommunityByWrite(users)));
+            } catch (Exception e) {
+                return ResponseEntity.status(500).body(new ApiResponsTemplate<>("UPLOAD_FAILED", e.getMessage(), null));
+            }
+        }
 
     }
 

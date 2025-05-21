@@ -8,9 +8,14 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Getter
 public class User {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    private Long Id;
+
     @Column(name = "user_id", nullable = false)
     private String userId;
 
@@ -19,4 +24,5 @@ public class User {
 
     @Column(name = "nickname", nullable = false)
     private String nickname;
+
 }

@@ -22,7 +22,7 @@ public class Keyword {
     private boolean notification;
 
     @Column(name = "user_id", nullable = false)
-    private String userId;
+    private Long userId;
     
     @ManyToOne
     @JoinColumn(name = "user_id", insertable = false, updatable = false)

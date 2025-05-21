@@ -26,7 +26,7 @@ public class Comment {
     private Long communityId;
 
     @Column(name = "user_id", nullable = false)
-    private String userId;
+    private Long userId;
 
     @Column(name = "parent_comment_id", nullable = true)
     private Long parent_commentId;

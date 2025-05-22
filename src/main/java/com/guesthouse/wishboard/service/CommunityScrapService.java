@@ -34,51 +34,37 @@ public class CommunityScrapService {
     private final Community_scrapRepository scrapRepo;
     private final UserRepository userRepo;
 
-    // 로그인한 유저 조회, 없으면 404 에러 던짐
-    private User getUserOrThrow(String loginUserId) {
-        User user = userRepo.findAllByUserId(loginUserId);
-        if (user == null) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "User not found: " + loginUserId
-            );
-        }
-        return user;
+    private User getUser(Long userPk) {
+        return userRepo.findById(userPk)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "user"));
     }
 
-    public CommunityScrapResponse addScrap(String communityName, String loginUserId) {
-        User user = getUserOrThrow(loginUserId);
+    public CommunityScrapResponse addScrap(String communityName, Long userPk) {
 
-        if (scrapRepo.existsByCommunityNameAndUser(communityName, user)) {
-            throw new ResponseStatusException(
-                    HttpStatus.CONFLICT,
-                    "이미 즐겨찾기에 존재합니다."
-            );
+        if (scrapRepo.exists(communityName, userPk)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "이미 존재");
         }
-        Community_scrap saved = scrapRepo.save(new Community_scrap(communityName, user));
+        Community_scrap saved =
+                scrapRepo.save(new Community_scrap(communityName, getUser(userPk)));
         return CommunityScrapResponse.from(saved);
     }
 
-    public void deleteScrap(String communityName, String loginUserId) {
-        User user = getUserOrThrow(loginUserId);
-
-        Community_scrap scrap = scrapRepo
-                .findByCommunityNameAndUser(communityName, user)
+    public void deleteScrap(String communityName, Long userPk) {
+        Community_scrap scrap = scrapRepo.findOne(communityName, userPk)
                 .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Scrap not found: " + communityName
-                ));
-
+                        HttpStatus.NOT_FOUND, "scrap not found"));
         scrapRepo.delete(scrap);
     }
 
     @Transactional(readOnly = true)
-    public Page<CommunityScrapResponse> myScraps(String loginUserId, Pageable pageable) {
-        User user = getUserOrThrow(loginUserId);
-        return scrapRepo.findByUser(user, pageable)
+    public Page<CommunityScrapResponse> myScraps(Long userPk, Pageable pageable) {
+        return scrapRepo.findPage(userPk, pageable)
                 .map(CommunityScrapResponse::from);
     }
 }
+
+
 
 
 

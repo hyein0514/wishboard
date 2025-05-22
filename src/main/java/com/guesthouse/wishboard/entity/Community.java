@@ -1,6 +1,9 @@
 package com.guesthouse.wishboard.entity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -28,8 +31,9 @@ public class Community {
     @Column(name = "content", nullable = false)
     private String content;
 
-    @Column(name = "created_at", nullable = false)
-    private Date createdAt;
+    @Column(name = "created_at", nullable = false,  updatable = false)
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 
     @Column(name = "community_diversity", nullable = false)
     private String communityDiversity;

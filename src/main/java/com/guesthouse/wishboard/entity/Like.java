@@ -27,4 +27,8 @@ public class Like {
     @ManyToOne
     @JoinColumn(name = "community_id", insertable = false, updatable = false)
     private Community community;
+    public Like(Long userId, Long communityId) {
+        this.userId      = userId;
+        this.communityId = communityId;
+    }
 }

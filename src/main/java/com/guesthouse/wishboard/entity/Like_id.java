@@ -6,6 +6,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Like_id implements Serializable {
-    private String userId;
+    private Long userId;
     private Long communityId;
 }

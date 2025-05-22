@@ -1,7 +1,12 @@
 server:
   port: 8080
-
+logging:
+  level:
+    org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: DEBUG
+    org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod: DEBUG
 spring:
+  main:
+    debug: true
   application:
     name: likeLion
   servlet:
@@ -9,7 +14,10 @@ spring:
       max-file-size: 50MB
       max-request-size: 50MB
   datasource:
-    url: jdbc:mysql://wish-db.cpqoco2a86yd.ap-northeast-2.rds.amazonaws.com/wishboard_db
+    url: jdbc:mysql://wish-db.cpqoco2a86yd.ap-northeast-2.rds.amazonaws.com/wishboard_db?characterEncoding=UTF-8
+      &serverTimezone=Asia/Seoul
+      &zeroDateTimeBehavior=CONVERT_TO_NULL
+
     username: root
     password: 12345678
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -18,11 +26,12 @@ spring:
     database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: true #여기
     properties:
       hibernate:
         format_sql: false
         use_sql_comments: true
 
-jwt:
-  secret: 70ffd0f5f3fd34bcc58bb41920e4e9ac4b4c8aa743553772c68774cee409d3c583550ba4d30a7a7c02467bec882c450b4281f661b9b80f77daf0b37c69003868
+  jwt:
+    secret: 70ffd0f5f3fd34bcc58bb41920e4e9ac4b4c8aa743553772c68774cee409d3c583550ba4d30a7a7c02467bec882c450b4281f661b9b80f77daf0b37c69003868
+

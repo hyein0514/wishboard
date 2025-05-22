@@ -12,10 +12,6 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-/**
- * 게시글(Community) 전용 Repository
- * Spring Data JPA가 런타임에 구현체를 자동 생성합니다.
- */
 public interface CommunityRepository extends JpaRepository<Community, Long> {
 
     // 검색용
@@ -51,4 +47,15 @@ public interface CommunityRepository extends JpaRepository<Community, Long> {
      */
     @EntityGraph(attributePaths = { "images" })
     Community findByCommunityId(Long communityId);
+
+    /** 상위분류에 속한 게시글 조회 (검색기능) **/
+    Page<Community> findByCommunityType(String communityType, Pageable pageable);
+
+    /** 글 불러오기 **/
+    Page<Community> findByCommunityTypeAndType(
+            String communityType,
+            String type,
+            Pageable pageable
+    );
+
 }

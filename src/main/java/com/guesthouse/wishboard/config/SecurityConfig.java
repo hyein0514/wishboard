@@ -17,13 +17,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
     private final AuthenticationConfiguration authenticationConfiguration;
     //JWTUtil 주입
     private final JwtUtil jwtUtil;
 
     public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JwtUtil jwtUtil) {
-
+        System.out.println(">>> SecurityConfig 로드됨");
         this.authenticationConfiguration = authenticationConfiguration;
         this.jwtUtil = jwtUtil;
     }
@@ -40,24 +39,38 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+//    @Bean
+//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+//
+//        http
+//                .csrf((auth) -> auth.disable())
+//                .formLogin((auth) -> auth.disable())
+//                .httpBasic((auth) -> auth.disable())
+//                .authorizeHttpRequests((auth) -> auth
+//                        .requestMatchers("/login", "/", "/join/**", "/swagger-ui/**",
+//                                "/v3/api-docs/**",
+//                                "/swagger-resources/**",
+//                                "/webjars/**", "/profile","/users/**"
+//                                , "/api/community-scraps/**"
+//                        ).permitAll()
+//                        .anyRequest().authenticated())
+//                .addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
+//                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class)
+//                .sessionManagement((session) -> session
+//                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+//
+//        return http.build();
+//    }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
         http
-                .csrf((auth) -> auth.disable())
-                .formLogin((auth) -> auth.disable())
-                .httpBasic((auth) -> auth.disable())
-                .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/login", "/", "/join/**", "/swagger-ui/**",
-                                "/v3/api-docs/**",
-                                "/swagger-resources/**",
-                                "/webjars/**", "/profile","/users/**").permitAll()
-                        .anyRequest().authenticated())
-                .addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class)
-                .sessionManagement((session) -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
 
         return http.build();
     }
+
+
+
 }

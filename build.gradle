@@ -25,7 +25,7 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
-
+    
     // Lombok
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
@@ -48,6 +48,11 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.3'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+
+    //chatGPT API
+    implementation 'io.github.flashvayne:chatgpt-spring-boot-starter:1.0.4'
+    //WebFlux
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
 }
 

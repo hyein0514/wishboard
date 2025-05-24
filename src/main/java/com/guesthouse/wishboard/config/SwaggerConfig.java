@@ -36,6 +36,7 @@ public class SwaggerConfig {
 
         return new OpenAPI()
                 .addServersItem(localServer)
+                .addSecurityItem(new io.swagger.v3.oas.models.security.SecurityRequirement().addList("BearerAuth"))
                 .info(new Info().title("API 명세서")
                         .version("1.0")
                         .description("Swagger"));

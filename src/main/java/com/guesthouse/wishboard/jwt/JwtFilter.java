@@ -1,6 +1,7 @@
 package com.guesthouse.wishboard.jwt;
 
 import com.guesthouse.wishboard.entity.User;
+import com.guesthouse.wishboard.service.CustomUserDetailService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -8,16 +9,19 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
 public class JwtFilter extends OncePerRequestFilter{
         private final JwtUtil jwtUtil;
+        private final CustomUserDetailService customUserDetailService;
 
-        public JwtFilter(JwtUtil jwtUtil) {
+        public JwtFilter(JwtUtil jwtUtil,CustomUserDetailService customUserDetailService) {
 
             this.jwtUtil = jwtUtil;
+            this.customUserDetailService = customUserDetailService;
         }
 
 
@@ -54,19 +58,12 @@ public class JwtFilter extends OncePerRequestFilter{
             //토큰에서 username과 role 획득
             String username = jwtUtil.getUsername(token);
 
-            //userEntity를 생성하여 값 set
-            User userEntity = new User();
-            userEntity.setUserId(username);
-            userEntity.setPassword("password");
+            UserDetails userDetails = customUserDetailService.loadUserByUsername(username);
 
-            //UserDetails에 회원 정보 객체 담기
-            CustomUserDetail customUserDetails = new CustomUserDetail(userEntity);
-
-            //스프링 시큐리티 인증 토큰 생성
-            Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
-            //세션에 사용자 등록
-            SecurityContextHolder.getContext().setAuthentication(authToken);
-
+            Authentication authentication = new UsernamePasswordAuthenticationToken(
+                    userDetails, null, userDetails.getAuthorities()
+            );
+            SecurityContextHolder.getContext().setAuthentication(authentication);
             filterChain.doFilter(request, response);
         }
     }

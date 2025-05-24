@@ -12,6 +12,7 @@ import com.guesthouse.wishboard.repository.CommunityRepository;
 import com.guesthouse.wishboard.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -27,6 +28,7 @@ public class CommentService {
     private final CommentLikeRepository likeRepo;
     private final CommunityRepository communityRepo;
     private final UserRepository userRepo;
+    private final JdbcTemplate jdbcTemplate;
 
     /* 댓글 작성 */
     @Transactional
@@ -115,21 +117,41 @@ public class CommentService {
 
     /* 좋아요 (중복 무시) */
     @Transactional
-    public long like(Long commentId, Long userId) {
-
-        if (!likeRepo.existsByUserIdAndCommentId(userId, commentId)) {
-            likeRepo.save(new Comment_like(userId, commentId));
+    public long likeComment(Long commentId, Long userId) {
+        // 1) 댓글이 존재하는지 확인
+        if (!commentRepo.existsById(commentId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "comment");
         }
-        return likeRepo.countByCommentId(commentId);
+
+        // 2) 이미 눌렀는지 검사
+        Integer existsCount = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM comment_like WHERE user_id = ? AND comment_id = ?",
+                Integer.class, userId, commentId);
+        if (existsCount != null && existsCount == 0) {
+            jdbcTemplate.update(
+                    "INSERT INTO comment_like (user_id, comment_id) VALUES (?, ?)",
+                    userId, commentId);
+        }
+
+        // 3) 좋아요 총 개수 리턴
+        Integer total = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM comment_like WHERE comment_id = ?",
+                Integer.class, commentId);
+        return total != null ? total : 0L;
     }
 
-    /* 글에 달린 댓글 + 대댓글 트리 조회용 */
+    // (기존) 댓글 리스트 조회
     public List<CommentResponse> listComments(Long communityId) {
-        return commentRepo.findByCommunity_CommunityIdAndParentCommentIsNullOrderByCreatedAtAsc(communityId)
+        return commentRepo
+                .findByCommunity_CommunityIdAndParentCommentIsNullOrderByCreatedAtAsc(communityId)
                 .stream()
                 .map(c -> CommentResponse.from(
                         c,
-                        likeRepo.countByCommentId(c.getCommentId())
+                        // JpaRepository 대신 JdbcTemplate 으로 카운트
+                        jdbcTemplate.queryForObject(
+                                "SELECT COUNT(*) FROM comment_like WHERE comment_id = ?",
+                                Integer.class, c.getCommentId()
+                        )
                 ))
                 .toList();
     }

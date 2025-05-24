@@ -34,8 +34,8 @@ public class Comment {
 
     @Column(name = "parent_comment_id", nullable = true)
     private Long parentCommentId;
-    
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "community_id", insertable = false, updatable = false)
     private Community community;
 

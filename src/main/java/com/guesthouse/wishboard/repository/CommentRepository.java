@@ -12,6 +12,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface CommentRepository extends JpaRepository<Comment,Long> {
+
+    /* 댓글 트리 용 */
+    List<Comment> findByCommunity_CommunityIdAndParentCommentIsNullOrderByCreatedAtAsc(Long communityId);
+    List<Comment> findByParentComment_CommentIdOrderByCreatedAtAsc(Long parentId);
+
+
+    /* 마이페이지 용 */
     @Query( "SELECT DISTINCT cm " +
             "FROM Comment cm " +
             "JOIN cm.community c " +

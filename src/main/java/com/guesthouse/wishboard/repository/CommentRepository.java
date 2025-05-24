@@ -13,12 +13,13 @@ import java.util.List;
 
 public interface CommentRepository extends JpaRepository<Comment,Long> {
 
-    /** 최상위 댓글(부모가 없는) 목록 조회 */
-    List<Comment> findByCommunity_CommunityIdAndParentCommentIsNullOrderByCreatedAtAsc(Long communityId);
 
-    /** 특정 댓글의 모든 대댓글(부모Comment가 이 commentId인 것) */
+    /* 댓글 트리 용 */
+    List<Comment> findByCommunity_CommunityIdAndParentCommentIsNullOrderByCreatedAtAsc(Long communityId);
     List<Comment> findByParentComment_CommentIdOrderByCreatedAtAsc(Long parentId);
-    
+
+
+    /* 마이페이지 용 */
     @Query( "SELECT DISTINCT cm " +
             "FROM Comment cm " +
             "JOIN cm.community c " +

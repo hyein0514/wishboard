@@ -16,6 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
+import javax.sql.DataSource;
+import org.springframework.jdbc.core.JdbcTemplate;
+
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +30,7 @@ public class PostService {
     private final UserRepository userRepo;
     private final CommunityLikeRepository likeRepo;
     private final BucketListRepository bucketRepo;
+    private final JdbcTemplate jdbcTemplate;
 
     public Page<PostSummaryResponse> listPosts(
             String communityType,
@@ -68,7 +72,9 @@ public class PostService {
                 .communityDiversity(req.diversity())
                 .title(req.title())
                 .content(req.content())
+                .user(author)
                 .bucketId(req.bucketId())
+                .bucketList(bucket)
                 .build();
 
         Community saved = communityRepo.save(entity);
@@ -83,23 +89,25 @@ public class PostService {
         Community c = communityRepo.findById(communityId)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "post"));
+        User author = userRepo.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "user"));
 
-        // 밑에 부분은 나중에 버킷 추가되면 복구하기
-//        Bucket_list bucket = bucketRepo.findById(c.getBucketId())
-//                .orElseThrow(() -> new ResponseStatusException(
-//                        HttpStatus.NOT_FOUND, "bucket"));
-//
-//        if (!bucket.getUser().getUserId().equals(userId)) {
-//            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "not author");
-//        }
+        if (c.getUser() == null) {
+            c.setUser(author);
+        }
 
-        if (!userId.equals("1111")) { /* 예시 */ }
+         /* 작성자 본인인지 확인  */
+        if (!c.getUser().getId().equals(userId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "not author");
+        }
+
 
         c.setType(req.type());
         c.setCommunityType(req.communityType());
         c.setCommunityDiversity(req.diversity());
         c.setTitle(req.title());
         c.setContent(req.content());
+
         return PostResponse.from(c);
     }
 
@@ -109,23 +117,38 @@ public class PostService {
         Community c = communityRepo.findById(communityId)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "post"));
-//        if (!c.getBucket().getUser().getUserId().equals(userId))
-//            throw new ResponseStatusException(
-//                    HttpStatus.FORBIDDEN, "not author");
+
+        if (!c.getUser().getId().equals(userId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "not author");
+        }
+
         communityRepo.delete(c);
     }
 
-    @Transactional
-    /* 게시글 좋아요 (토글 아님, 중복 시 무시) */
+@Transactional
     public long like(Long communityId, Long userId) {
-
-        if (!communityRepo.existsById(communityId))
+        // 1) 게시글 존재 확인
+        if (!communityRepo.existsById(communityId)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "post");
-
-        // 이미 눌렀는지 검사
-        if (!likeRepo.existsByUserIdAndCommunityId(userId, communityId)) {
-            likeRepo.save(new Like(userId, communityId));  // ← 이 부분 수정
         }
-        return likeRepo.countByCommunityId(communityId);
+
+        // 2) 이미 눌렀는지 체크 (count = 0 이면 아직 안 눌렀음)
+        Integer existsCount = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM `like` WHERE user_id = ? AND community_id = ?",
+                Integer.class, userId, communityId);
+
+        if (existsCount != null && existsCount == 0) {
+            jdbcTemplate.update(
+                    "INSERT INTO `like` (user_id, community_id) VALUES (?, ?)",
+                    userId, communityId);
+        }
+
+        // 3) 좋아요 총 개수 리턴
+        Integer total = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM `like` WHERE community_id = ?",
+                Integer.class, communityId);
+
+        return total != null ? total : 0L;
     }
+
 }

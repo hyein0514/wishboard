@@ -1,10 +1,10 @@
 package com.guesthouse.wishboard.entity;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "community")
@@ -31,9 +31,8 @@ public class Community {
     @Column(name = "content", nullable = false)
     private String content;
 
-    @Column(name = "created_at", nullable = false,  updatable = false)
-    @CreationTimestamp
-    private LocalDateTime createdAt;
+    @Column(name = "created_at", nullable = false)
+    private Date createdAt;
 
     @Column(name = "community_diversity", nullable = false)
     private String communityDiversity;
@@ -44,4 +43,19 @@ public class Community {
     @ManyToOne
     @JoinColumn(name = "bucket_id", insertable = false, updatable = false)
     private BucketList bucketList;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @OneToMany(mappedBy = "community", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Like> likes = new ArrayList<>();
+
+    @OneToMany
+    @JoinColumn(name = "image_id")
+    private List<Image> images = new ArrayList<>();
+
+    @OneToMany
+    @JoinColumn(name = "")
+    private List<Comment> comments = new ArrayList<>();
 }

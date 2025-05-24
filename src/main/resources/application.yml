@@ -14,9 +14,9 @@ spring:
       max-file-size: 50MB
       max-request-size: 50MB
   datasource:
-    url: jdbc:mysql://wish-db.cpqoco2a86yd.ap-northeast-2.rds.amazonaws.com/wishboard_db?characterEncoding=UTF-8
+    url: "jdbc:mysql://wish-db.cpqoco2a86yd.ap-northeast-2.rds.amazonaws.com/wishboard_db?characterEncoding=UTF-8
       &serverTimezone=Asia/Seoul
-      &zeroDateTimeBehavior=CONVERT_TO_NULL
+      &zeroDateTimeBehavior=CONVERT_TO_NULL"
 
     username: root
     password: 12345678
@@ -26,7 +26,7 @@ spring:
     database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
       ddl-auto: update
-    show-sql: true #여기
+    show-sql: true
     properties:
       hibernate:
         format_sql: false

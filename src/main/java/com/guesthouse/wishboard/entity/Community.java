@@ -1,7 +1,9 @@
 package com.guesthouse.wishboard.entity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -31,8 +33,9 @@ public class Community {
     @Column(name = "content", nullable = false)
     private String content;
 
-    @Column(name = "created_at", nullable = false)
-    private Date createdAt;
+    @Column(name = "created_at", nullable = false,  updatable = false)
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 
     @Column(name = "community_diversity", nullable = false)
     private String communityDiversity;
@@ -51,11 +54,13 @@ public class Community {
     @OneToMany(mappedBy = "community", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likes = new ArrayList<>();
 
-    @OneToMany
-    @JoinColumn(name = "image_id")
+    @OneToMany(mappedBy = "community",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private List<Image> images = new ArrayList<>();
 
-    @OneToMany
-    @JoinColumn(name = "")
+    @OneToMany(mappedBy = "community",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 }

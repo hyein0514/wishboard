@@ -15,6 +15,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class MyPageDTO {
     private Long communityId;
+    private String communityType;
     private String type;
     private String title;
     private String content;

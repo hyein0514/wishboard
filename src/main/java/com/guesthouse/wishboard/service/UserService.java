@@ -61,19 +61,20 @@ public class UserService {
             List<MyPageDTO> myPageDTOS = new ArrayList<>();
             for(Comment comment : comments){
                 MyPageDTO myPageDTO = MyPageDTO.builder()
-                        .communityId(comment.getCommunityId())
-                        .title(comment.getCommunity().getTitle())
-                        .type(comment.getCommunity().getType())
-                        .communityDiversity(comment.getCommunity().getCommunityDiversity())
-                        .content(comment.getCommunity().getContent())
-                        .commentNum(comments.size())
-                        .createdAt(comment.getCommunity().getCreatedAt())
-                        .writerNickName(comment.getCommunity().getUser().getNickname())
-                        .img(!comment.getCommunity().getImages().isEmpty()
-                                ? comment.getCommunity().getImages().get(0).getImageUrl()
-                                : null)
-                        .likeNum(comment.getCommunity().getLikes().size())
-                        .build();
+                    .communityId(comment.getCommunityId())
+                    .title(comment.getCommunity().getTitle())
+                    .type(comment.getCommunity().getType())
+                    .communityDiversity(comment.getCommunity().getCommunityDiversity())
+                    .content(comment.getCommunity().getContent())
+                    .commentNum(comments.size())
+                    .createdAt(comment.getCommunity().getCreatedAt())
+                    .writerNickName(comment.getCommunity().getUser().getNickname())
+                    .img(!comment.getCommunity().getImages().isEmpty()
+                            ? comment.getCommunity().getImages().get(0).getImageUrl()
+                            : null)
+                    .likeNum(comment.getCommunity().getLikes().size())
+                    .communityType(comment.getCommunity().getCommunityType()) // ✅ 추가
+                    .build();
 
                 myPageDTOS.add(myPageDTO);
             }
@@ -89,7 +90,7 @@ public class UserService {
             MyPageDTO myPageDTO = MyPageDTO.builder()
                     .communityId(community.getCommunityId())
                     .title(community.getTitle())
-                    .type(community.getType())
+                    .communityType(community.getCommunityType())
                     .communityDiversity(community.getCommunityDiversity())
                     .content(community.getContent())
                     .commentNum(community.getComments().size())
@@ -115,7 +116,7 @@ public class UserService {
             MyPageDTO myPageDTO = MyPageDTO.builder()
                     .communityId(community.getCommunityId())
                     .title(community.getTitle())
-                    .type(community.getType())
+                    .communityType(community.getCommunityType())
                     .communityDiversity(community.getCommunityDiversity())
                     .content(community.getContent())
                     .commentNum(community.getComments().size())

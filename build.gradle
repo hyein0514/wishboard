@@ -48,6 +48,7 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.3'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 
     //chatGPT API
     implementation 'io.github.flashvayne:chatgpt-spring-boot-starter:1.0.4'

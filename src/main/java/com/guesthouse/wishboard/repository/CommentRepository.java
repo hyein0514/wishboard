@@ -13,7 +13,6 @@ import java.util.List;
 
 public interface CommentRepository extends JpaRepository<Comment,Long> {
 
-
     /* 댓글 트리 용 */
     List<Comment> findByCommunity_CommunityIdAndParentCommentIsNullOrderByCreatedAtAsc(Long communityId);
     List<Comment> findByParentComment_CommentIdOrderByCreatedAtAsc(Long parentId);

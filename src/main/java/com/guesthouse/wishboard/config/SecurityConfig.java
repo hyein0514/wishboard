@@ -18,6 +18,7 @@ import org.springframework.security.config.Customizer;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -88,10 +89,9 @@ public class SecurityConfig {
 
         return http.build();
     }
-
+    
     @Bean
     public JdbcTemplate jdbcTemplate(DataSource dataSource) {
         return new JdbcTemplate(dataSource);
     }
-
 }

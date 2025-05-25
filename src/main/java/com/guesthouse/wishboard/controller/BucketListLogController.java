@@ -1,10 +1,13 @@
 package com.guesthouse.wishboard.controller;
 
 import com.guesthouse.wishboard.dto.BucketListLogRequestDto;
+import com.guesthouse.wishboard.dto.BucketListLogResponseDto;
 import com.guesthouse.wishboard.service.BucketListLogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/bucketlist/log")
@@ -18,4 +21,10 @@ public class BucketListLogController {
         bucketListLogService.createLog(dto);
         return ResponseEntity.ok("도전 기록이 등록되었습니다.");
     }
+
+    @GetMapping("/{bucketId}")
+    public ResponseEntity<List<BucketListLogResponseDto>> getLogs(@PathVariable Long bucketId) {
+        return ResponseEntity.ok(bucketListLogService.getLogList(bucketId));
+    }
 }
+

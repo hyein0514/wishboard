@@ -38,4 +38,16 @@ public class BucketListController {
         bucketListService.deleteBucketList(id);
         return ResponseEntity.ok("버킷리스트가 삭제되었습니다.");
     }
+
+    @PatchMapping("/{id}/pin")
+    public ResponseEntity<String> togglePin(@PathVariable Long id) {
+        bucketListService.togglePin(id);
+        return ResponseEntity.ok("핀 상태가 변경되었습니다.");
+    }
+
+    @PatchMapping("/{id}/achieve")
+    public ResponseEntity<String> achieve(@PathVariable Long id) {
+        bucketListService.achieve(id);
+        return ResponseEntity.ok("버킷리스트가 완료 처리되었습니다.");
+    }
 }

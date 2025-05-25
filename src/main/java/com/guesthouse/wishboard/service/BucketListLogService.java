@@ -54,6 +54,35 @@ public class BucketListLogService {
                 .toList();
     }
 
+    public BucketListLogResponseDto getLogDetail(Long logId) {
+        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+        BucketList_log log = logRepository.findById(logId)
+                .orElseThrow(() -> new RuntimeException("도전 기록이 존재하지 않습니다."));
+
+        if (!log.getBucketList().getUser().getUserId().equals(userId)) {
+            throw new RuntimeException("해당 기록에 접근할 권한이 없습니다.");
+        }
+
+        return BucketListLogResponseDto.builder()
+                .logId(log.getLogId())
+                .createdAt(toDateStr(log.getCreatedAt()))
+                .image(log.getImage())
+                .content(log.getContent())
+                .build();
+    }
+
+    public void deleteLog(Long logId) {
+        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+        BucketList_log log = logRepository.findById(logId)
+                .orElseThrow(() -> new RuntimeException("도전 기록이 존재하지 않습니다."));
+
+        if (!log.getBucketList().getUser().getUserId().equals(userId)) {
+            throw new RuntimeException("해당 기록을 삭제할 권한이 없습니다.");
+        }
+
+        logRepository.delete(log);
+    }
+
     private Date parseDate(String dateStr) {
         try {
             return new SimpleDateFormat("yyyy-MM-dd").parse(dateStr);

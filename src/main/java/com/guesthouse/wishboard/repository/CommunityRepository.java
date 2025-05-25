@@ -16,6 +16,8 @@ public interface CommunityRepository extends JpaRepository<Community, Long> {
        
        List<Community> findByTitleContainingIgnoreCase(String keyword);
 
+    List<Community> findByTitleContainingIgnoreCase(String keyword); //AI추천에서사용
+    
     // 검색용
     // 키워드를 포함하는 하위분류를 찾고, 상위분류별로 묶어 개수까지 리턴
     @Query("""

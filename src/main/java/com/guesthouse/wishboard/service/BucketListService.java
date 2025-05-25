@@ -83,6 +83,31 @@ public class BucketListService {
         bucketListRepository.delete(bucketList);
     }
 
+    public void togglePin(Long id) {
+        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+        BucketList bucketList = bucketListRepository.findByBucketIdAndUser_UserId(id, userId)
+                .orElseThrow(() -> new RuntimeException("버킷리스트가 존재하지 않습니다."));
+
+        boolean isPinned = bucketList.getPinToTop();
+
+        if (!isPinned && bucketListRepository.countByUser_UserIdAndPinToTopTrue(userId) >= 3) {
+            throw new RuntimeException("고정 가능한 최대 개수는 3개입니다.");
+        }
+
+        bucketList.setPinToTop(!isPinned);
+        bucketListRepository.save(bucketList);
+    }
+
+    public void achieve(Long id) {
+        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+        BucketList bucketList = bucketListRepository.findByBucketIdAndUser_UserId(id, userId)
+                .orElseThrow(() -> new RuntimeException("버킷리스트가 존재하지 않습니다."));
+
+        bucketList.setStatus("done");
+        bucketList.setAchievedAt(new Date());
+        bucketListRepository.save(bucketList);
+    }
+
     private Date parseDate(String dateStr) {
         try {
             return new SimpleDateFormat("yyyy-MM-dd").parse(dateStr);

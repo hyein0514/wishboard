@@ -3,6 +3,7 @@ package com.guesthouse.wishboard.repository;
 
 import com.guesthouse.wishboard.entity.BucketList;
 import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.Optional;
 
 import java.util.List;
 
@@ -16,4 +17,6 @@ public interface BucketListRepository extends JpaRepository<BucketList, Long> {
 
     /* 3) 특정 사용자의 버킷 목록 */
     List<BucketList> findByUser_UserIdOrderByPinToTopDescTargetDateAsc(String userId);
+    Optional<BucketList> findByBucketIdAndUser_UserId(Long bucketId, String userId);
+
 }

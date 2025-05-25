@@ -15,5 +15,5 @@ public interface BucketListRepository extends JpaRepository<BucketList, Long> {
     boolean existsByTitleAndUser_UserId(String title, String userId);
 
     /* 3) 특정 사용자의 버킷 목록 */
-    List<BucketList> findByUser_UserIdOrderByCreatedAtDesc(String userId);
+    List<BucketList> findByUser_UserIdOrderByPinToTopDescTargetDateAsc(String userId);
 }

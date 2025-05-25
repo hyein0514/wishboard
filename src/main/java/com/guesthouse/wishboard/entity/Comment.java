@@ -1,6 +1,9 @@
 package com.guesthouse.wishboard.entity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -19,8 +22,9 @@ public class Comment {
     @Column(name = "comment", nullable = false)
     private String comment;
 
-    @Column(name = "created_at", nullable = false)
-    private Date createdAt;
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false , updatable = false)
+    private LocalDateTime createdAt;
 
     @Column(name = "community_id", nullable = false)
     private Long communityId;
@@ -29,9 +33,9 @@ public class Comment {
     private Long userId;
 
     @Column(name = "parent_comment_id", nullable = true)
-    private Long parent_commentId;
-    
-    @ManyToOne
+    private Long parentCommentId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "community_id", insertable = false, updatable = false)
     private Community community;
 
@@ -39,7 +43,7 @@ public class Comment {
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_comment_id", insertable = false, updatable = false)
     private Comment parentComment;
 }

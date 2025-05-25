@@ -9,10 +9,10 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter @Setter
 public class CommentLike_id implements Serializable {
 
     private String userId;
 
     private Long commentId;
-
 }

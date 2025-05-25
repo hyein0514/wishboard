@@ -28,4 +28,8 @@ public class Comment_like {
     @JoinColumn(name = "comment_id", insertable = false, updatable = false)
     private Comment comment;
 
+    public Comment_like(Long userId, Long commentId) {
+        this.userId    = userId;
+        this.commentId = commentId;
+    }
 }

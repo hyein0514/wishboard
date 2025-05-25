@@ -26,5 +26,17 @@ public class BucketListLogController {
     public ResponseEntity<List<BucketListLogResponseDto>> getLogs(@PathVariable Long bucketId) {
         return ResponseEntity.ok(bucketListLogService.getLogList(bucketId));
     }
+
+    @GetMapping("/detail/{logId}")
+    public ResponseEntity<BucketListLogResponseDto> getLogDetail(@PathVariable Long logId) {
+        return ResponseEntity.ok(bucketListLogService.getLogDetail(logId));
+    }
+
+    @DeleteMapping("/{logId}")
+    public ResponseEntity<String> deleteLog(@PathVariable Long logId) {
+        bucketListLogService.deleteLog(logId);
+        return ResponseEntity.ok("도전 기록이 삭제되었습니다.");
+    }
 }
+
 

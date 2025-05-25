@@ -59,5 +59,4 @@ public interface CommunityRepository extends JpaRepository<Community, Long> {
             String type,
             Pageable pageable
     );
-
 }

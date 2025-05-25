@@ -2,6 +2,7 @@ package com.guesthouse.wishboard.controller;
 
 import com.guesthouse.wishboard.dto.BucketListRequestDto;
 import com.guesthouse.wishboard.dto.BucketListResponseDto;
+import com.guesthouse.wishboard.dto.BucketListDetailDto;
 import com.guesthouse.wishboard.service.BucketListService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,5 +26,16 @@ public class BucketListController {
     @GetMapping
     public ResponseEntity<List<BucketListResponseDto>> getMyBucketLists() {
         return ResponseEntity.ok(bucketListService.getMyBucketLists());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<BucketListDetailDto> getDetail(@PathVariable Long id) {
+        return ResponseEntity.ok(bucketListService.getBucketListDetail(id));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> delete(@PathVariable Long id) {
+        bucketListService.deleteBucketList(id);
+        return ResponseEntity.ok("버킷리스트가 삭제되었습니다.");
     }
 }

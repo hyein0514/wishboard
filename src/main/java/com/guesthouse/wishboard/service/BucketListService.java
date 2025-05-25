@@ -2,6 +2,7 @@ package com.guesthouse.wishboard.service;
 
 import com.guesthouse.wishboard.dto.BucketListRequestDto;
 import com.guesthouse.wishboard.dto.BucketListResponseDto;
+import com.guesthouse.wishboard.dto.BucketListDetailDto;
 import com.guesthouse.wishboard.entity.BucketList;
 import com.guesthouse.wishboard.entity.User;
 import com.guesthouse.wishboard.repository.BucketListRepository;
@@ -41,15 +42,6 @@ public class BucketListService {
         bucketListRepository.save(bucketList);
     }
 
-    private Date parseDate(String dateStr) {
-        try {
-            return new SimpleDateFormat("yyyy-MM-dd").parse(dateStr);
-        } catch (Exception e) {
-            throw new RuntimeException("날짜 형식이 잘못되었습니다: yyyy-MM-dd 형식이어야 합니다.");
-        }
-    }
-
-    // ✅ 목록 조회 추가
     public List<BucketListResponseDto> getMyBucketLists() {
         String userId = SecurityContextHolder.getContext().getAuthentication().getName();
         List<BucketList> list = bucketListRepository.findByUser_UserIdOrderByPinToTopDescTargetDateAsc(userId);
@@ -64,6 +56,39 @@ public class BucketListService {
                 .dDay(calcDDay(b.getTargetDate()))
                 .build()
         ).toList();
+    }
+
+    public BucketListDetailDto getBucketListDetail(Long id) {
+        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+        BucketList b = bucketListRepository.findByBucketIdAndUser_UserId(id, userId)
+                .orElseThrow(() -> new RuntimeException("버킷리스트가 존재하지 않습니다."));
+
+        return BucketListDetailDto.builder()
+                .bucketId(b.getBucketId())
+                .title(b.getTitle())
+                .category(b.getCategory())
+                .targetDate(toDateStr(b.getTargetDate()))
+                .image(b.getImage())
+                .reason(b.getReason())
+                .resolution(b.getResolution())
+                .pinToTop(b.getPinToTop())
+                .status(b.getStatus())
+                .build();
+    }
+
+    public void deleteBucketList(Long id) {
+        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+        BucketList bucketList = bucketListRepository.findByBucketIdAndUser_UserId(id, userId)
+                .orElseThrow(() -> new RuntimeException("삭제할 버킷리스트가 존재하지 않습니다."));
+        bucketListRepository.delete(bucketList);
+    }
+
+    private Date parseDate(String dateStr) {
+        try {
+            return new SimpleDateFormat("yyyy-MM-dd").parse(dateStr);
+        } catch (Exception e) {
+            throw new RuntimeException("날짜 형식이 잘못되었습니다: yyyy-MM-dd 형식이어야 합니다.");
+        }
     }
 
     private String toDateStr(Date date) {

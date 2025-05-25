@@ -12,5 +12,6 @@ public interface BucketListRepository extends JpaRepository<BucketList, Long> {
     List<BucketList> findByUser_UserIdOrderByPinToTopDescTargetDateAsc(String userId);
     Optional<BucketList> findByBucketIdAndUser_UserId(Long bucketId, String userId);
     long countByUser_UserIdAndPinToTopTrue(String userId);
+    List<BucketList> findByUser_UserIdOrderByCreatedAtDesc(String userId);
 }
 

@@ -3,6 +3,7 @@ package com.guesthouse.wishboard.service;
 import com.guesthouse.wishboard.dto.BucketListRequestDto;
 import com.guesthouse.wishboard.dto.BucketListResponseDto;
 import com.guesthouse.wishboard.dto.BucketListDetailDto;
+import com.guesthouse.wishboard.dto.BucketListHomeDto;
 import com.guesthouse.wishboard.entity.BucketList;
 import com.guesthouse.wishboard.entity.User;
 import com.guesthouse.wishboard.repository.BucketListRepository;
@@ -12,8 +13,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -106,6 +109,23 @@ public class BucketListService {
         bucketList.setStatus("done");
         bucketList.setAchievedAt(new Date());
         bucketListRepository.save(bucketList);
+    }
+
+    public List<BucketListHomeDto> getOngoingBucketListForHome() {
+        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+        return bucketListRepository.findByUser_UserIdOrderByCreatedAtDesc(userId)
+                .stream()
+                .filter(bucket -> bucket.getStatus().equals("ongoing"))
+                .sorted(Comparator.comparing(BucketList::getTargetDate))
+                .limit(3)
+                .map(bucket -> BucketListHomeDto.builder()
+                        .bucketId(bucket.getBucketId())
+                        .title(bucket.getTitle())
+                        .category(bucket.getCategory())
+                        .targetDate(toDateStr(bucket.getTargetDate()))
+                        .dday(calcDDay(bucket.getTargetDate()))
+                        .build())
+                .collect(Collectors.toList());
     }
 
     private Date parseDate(String dateStr) {

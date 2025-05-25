@@ -3,6 +3,7 @@ package com.guesthouse.wishboard.controller;
 import com.guesthouse.wishboard.dto.BucketListRequestDto;
 import com.guesthouse.wishboard.dto.BucketListResponseDto;
 import com.guesthouse.wishboard.dto.BucketListDetailDto;
+import com.guesthouse.wishboard.dto.BucketListHomeDto;
 import com.guesthouse.wishboard.service.BucketListService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class BucketListController {
     }
 
     @GetMapping
-    public ResponseEntity<List<BucketListResponseDto>> getMyBucketLists() {
+    public ResponseEntity<List<BucketListResponseDto>> getAll() {
         return ResponseEntity.ok(bucketListService.getMyBucketLists());
     }
 
@@ -36,18 +37,23 @@ public class BucketListController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id) {
         bucketListService.deleteBucketList(id);
-        return ResponseEntity.ok("버킷리스트가 삭제되었습니다.");
+        return ResponseEntity.ok("삭제되었습니다.");
     }
 
-    @PatchMapping("/{id}/pin")
+    @PutMapping("/{id}/pin")
     public ResponseEntity<String> togglePin(@PathVariable Long id) {
         bucketListService.togglePin(id);
-        return ResponseEntity.ok("핀 상태가 변경되었습니다.");
+        return ResponseEntity.ok("고정 상태가 변경되었습니다.");
     }
 
-    @PatchMapping("/{id}/achieve")
+    @PutMapping("/{id}/achieve")
     public ResponseEntity<String> achieve(@PathVariable Long id) {
         bucketListService.achieve(id);
-        return ResponseEntity.ok("버킷리스트가 완료 처리되었습니다.");
+        return ResponseEntity.ok("버킷리스트를 완료 처리했습니다.");
+    }
+
+    @GetMapping("/home")
+    public ResponseEntity<List<BucketListHomeDto>> getOngoingListForHome() {
+        return ResponseEntity.ok(bucketListService.getOngoingBucketListForHome());
     }
 }

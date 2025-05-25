@@ -35,10 +35,9 @@ public class AIController {
     }
     
     // 선택한 추천 버킷리스트글 조회
-    // 수정필요
-    @GetMapping("/detail/{CommunityId}")
-    public ResponseEntity<TrophyDetail1Dto> getBucketDetail(@PathVariable Long communityId) {
-        return ResponseEntity.ok(trophyService.getBucketDetailH(communityId));
-    }
+    // @GetMapping("/detail/{CommunityId}")
+    // public ResponseEntity<TrophyDetail1Dto> getBucketDetail(@PathVariable Long communityId) {
+    //     return ResponseEntity.ok(trophyService.getBucketDetailH(communityId));
+    // }
 
 }

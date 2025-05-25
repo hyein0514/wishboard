@@ -21,8 +21,14 @@ public class Community_scrap {
 
     @Column(name = "user_id", nullable = false)
     private Long userId;
-    
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", insertable = false, updatable = false)
     private User user;
+
+    public Community_scrap(String communityName, User user) {
+        this.communityName = communityName;
+        this.user = user;
+        this.userId = user.getId();
+    }
 }

@@ -6,6 +6,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @AllArgsConstructor
@@ -18,7 +19,7 @@ public class MyPageDTO {
     private String type;
     private String title;
     private String content;
-    private Date createdAt;
+    private LocalDateTime createdAt;
     private String communityDiversity;
     private String img;
     private String writerNickName;

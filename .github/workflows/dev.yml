@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-
 # Jobs
 jobs:
   # job 이름: cicd-deploy

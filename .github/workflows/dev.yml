@@ -28,3 +28,28 @@ jobs:
         run: |
           mv ./build/libs/*SNAPSHOT.jar ./springboot-aws.jar
           ls ./build/libs
+      - name: Upload .jar to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+            host: ${{ secrets.EC2_HOST }}
+            username: ${{ secrets.EC2_USER }}
+            key: ${{ secrets.EC2_KEY }}
+            source: ./springboot-aws.jar
+            target: /home/${{ secrets.EC2_USER }}/server/demo
+      - name: SSH to EC2
+        uses: appleboy/ssh-action@v1.2.0
+      
+        # 기존 jar 파일 삭제 처리 및 실행
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_KEY }}
+          script_stop: true
+          script: |
+            rm -rf /home/${{ secrets.EC2_USER }}/server/web
+            mkdir /home/${{ secrets.EC2_USER }}/server/web
+            mv /home/${{ secrets.EC2_USER }}/server/demo/springboot-aws.jar /home/${{ secrets.EC2_USER }}/server/web/springboot-aws.jar
+            sudo fuser -k -n tcp 8080 || true
+            cd /home/${{ secrets.EC2_USER }}/server/web
+            nohup java -jar springboot-aws.jar > ./ouput.log 2>&1 &
+            rm -rf /home/${{ secrets.EC2_USER }}/server/demo

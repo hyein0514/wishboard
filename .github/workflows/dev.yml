@@ -49,5 +49,5 @@ jobs:
             mv /home/${{ secrets.EC2_USER }}/server/demo/springboot-aws.jar /home/${{ secrets.EC2_USER }}/server/web/springboot-aws.jar
             sudo fuser -k -n tcp 8080 || true
             cd /home/${{ secrets.EC2_USER }}/server/web
-            nohup java -jar springboot-aws.jar > ./ouput.log 2>&1 &
+            nohup /usr/bin/java -jar springboot-aws.jar > ./ouput.log 2>&1 &
             rm -rf /home/${{ secrets.EC2_USER }}/server/demo

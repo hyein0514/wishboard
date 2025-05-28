@@ -49,5 +49,5 @@ jobs:
             mv /home/${{ secrets.EC2_USER }}/server/demo/springboot-aws.jar /home/${{ secrets.EC2_USER }}/server/web/springboot-aws.jar
             sudo fuser -k -n tcp 8080 || true
             cd /home/${{ secrets.EC2_USER }}/server/web
-            nohup /usr/bin/java -jar springboot-aws.jar > ./ouput.log 2>&1 &
+            nohup OPENAI_API_KEY=${{ secrets.OPEN_API_KEY }} /usr/bin/java -jar springboot-aws.jar > ./ouput.log 2>&1 &
             rm -rf /home/${{ secrets.EC2_USER }}/server/demo

@@ -40,7 +40,6 @@ public class AIService {
         String prompt = """
             너는 사용자가 완료한 목표들을 기반으로 다음 단계의 목표를 추천해주는 전문가야.
 
-
             조건:
             - 각 추천은 **단어 또는 짧은 명사구**로만 구성되어야 해.  
             - **동사를 포함하지 말고**, 핵심 키워드만 사용해.  
@@ -59,7 +58,6 @@ public class AIService {
             위 목표를 기반으로 다음 목표들을 추천해줘.
             """;
 
-            
         // OpenAI chat completion API 요청 형식
         Map<String, Object> request = Map.of(
                 "model", "gpt-4",

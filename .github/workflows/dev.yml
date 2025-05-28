@@ -1,0 +1,30 @@
+name: Deploy for CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+# Jobs
+jobs:
+  # job 이름: cicd-deploy
+  cicd-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      # JDK 17 설치
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+           # build 준비
+      - name: Build with Gradle
+        run: |
+          chmod +x gradlew
+          ./gradlew clean build
+      - name: Change file name
+        run: |
+          mv ./build/libs/*SNAPSHOT.jar ./springboot-aws.jar
+          ls ./build/libs

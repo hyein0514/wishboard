@@ -19,3 +19,12 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
+           # build 준비
+      - name: Build with Gradle
+        run: |
+          chmod +x gradlew
+          ./gradlew clean build
+      - name: Change file name
+        run: |
+          mv ./build/libs/*SNAPSHOT.jar ./springboot-aws.jar
+          ls ./build/libs

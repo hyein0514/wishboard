@@ -29,18 +29,21 @@ public interface CommunityRepository extends JpaRepository<Community, Long> {
 
 
     /**
-     * 커뮤니티별(communityType) + 게시판별(boardType) 목록 조회
-     * boardType 이 null 또는 "" 이면 ‘전체’로 간주.
+     * 상위 분류(communityDiversity) + 하위 분류(communityType) 목록 조회
+     * communityType 이 null 또는 "" 이면 ‘전체’ 로 간주.
      */
     @Query("""
-           SELECT c
-             FROM Community c
-            WHERE c.communityType = :communityType
-              AND (:boardType IS NULL OR :boardType = '' OR c.type = :boardType)
-           """)
-    Page<Community> findPage(String communityType,
-                             String boardType,
-                             Pageable pageable);
+       SELECT c
+         FROM Community c
+        WHERE c.communityDiversity = :communityDiversity
+          AND (:communityType IS NULL OR :communityType = '' OR c.communityType = :communityType)
+       """)
+    Page<Community> findByDiversityAndOptionalType(
+            @Param("communityDiversity") String communityDiversity,
+            @Param("communityType") String communityType,
+            Pageable pageable
+    );
+
 
     /**
      * 게시글 상세 조회 (이미지 eager 로딩)

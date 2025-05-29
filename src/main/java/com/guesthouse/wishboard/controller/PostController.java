@@ -25,17 +25,15 @@ public class PostController {
 
     private final PostService postService;
 
-    // private Long currentUserId() { return 1L; }
-
     /** 게시글 목록 조회 **/
     @GetMapping
     public ResponseEntity<Page<PostSummaryResponse>> list(
+            @RequestParam String communityDiversity,
             @RequestParam String communityType,
-            @RequestParam String boardType,
             Pageable pageable
     ) {
         Page<PostSummaryResponse> page =
-                postService.listPosts(communityType, boardType, pageable);
+                postService.listPosts(communityDiversity,communityType,pageable);
         return ResponseEntity.ok(page);
     }
 

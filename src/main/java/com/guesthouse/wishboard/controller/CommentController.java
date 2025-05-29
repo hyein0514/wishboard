@@ -20,7 +20,12 @@ public class CommentController {
 
     private final CommentService commentService;
 
-    private Long currentUserId() { return 1L; }
+    // 특정 게시글의 전체 댓글(최상위) 조회
+    @GetMapping("/posts/{communityId}/comments")
+    public ResponseEntity<?> getComments(
+            @PathVariable Long communityId) {
+        return ResponseEntity.ok(commentService.listComments(communityId));
+    }
 
     /* 댓글 작성 */
     @PostMapping("/posts/{communityId}/comments")

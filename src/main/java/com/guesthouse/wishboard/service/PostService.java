@@ -33,14 +33,15 @@ public class PostService {
     private final JdbcTemplate jdbcTemplate;
 
     public Page<PostSummaryResponse> listPosts(
+            String communityDiversity,
             String communityType,
-            String boardType,
             Pageable pageable
     ) {
         return communityRepo
-                .findByCommunityTypeAndType(communityType, boardType, pageable)
+                .findByDiversityAndOptionalType(communityDiversity, communityType, pageable)
                 .map(PostSummaryResponse::from);
     }
+
 
     public PostDetailResponse getPost(Long communityId) {
         Community c = communityRepo.findById(communityId)

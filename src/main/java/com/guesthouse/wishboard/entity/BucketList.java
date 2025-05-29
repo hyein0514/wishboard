@@ -26,7 +26,7 @@ public class BucketList {
     private Date targetDate;
 
     @Column(name = "PinToTop", nullable = true)
-    private Boolean PinToTop;
+    private Boolean pinToTop;
 
     @Column(name = "image", nullable = true)
     private String image;

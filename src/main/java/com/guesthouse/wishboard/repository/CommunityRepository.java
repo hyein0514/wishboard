@@ -14,6 +14,8 @@ import java.util.List;
 
 public interface CommunityRepository extends JpaRepository<Community, Long> {
 
+    List<Community> findByTitleContainingIgnoreCase(String keyword);
+
     // 검색용
     // 키워드를 포함하는 하위분류를 찾고, 상위분류별로 묶어 개수까지 리턴
     @Query("""
@@ -29,21 +31,18 @@ public interface CommunityRepository extends JpaRepository<Community, Long> {
 
 
     /**
-     * 상위 분류(communityDiversity) + 하위 분류(communityType) 목록 조회
-     * communityType 이 null 또는 "" 이면 ‘전체’ 로 간주.
+     * 커뮤니티별(communityType) + 게시판별(boardType) 목록 조회
+     * boardType 이 null 또는 "" 이면 ‘전체’로 간주.
      */
     @Query("""
-       SELECT c
-         FROM Community c
-        WHERE c.communityDiversity = :communityDiversity
-          AND (:communityType IS NULL OR :communityType = '' OR c.communityType = :communityType)
-       """)
-    Page<Community> findByDiversityAndOptionalType(
-            @Param("communityDiversity") String communityDiversity,
-            @Param("communityType") String communityType,
-            Pageable pageable
-    );
-
+           SELECT c
+             FROM Community c
+            WHERE c.communityType = :communityType
+              AND (:boardType IS NULL OR :boardType = '' OR c.type = :boardType)
+           """)
+    Page<Community> findPage(String communityType,
+                             String boardType,
+                             Pageable pageable);
 
     /**
      * 게시글 상세 조회 (이미지 eager 로딩)
@@ -60,5 +59,4 @@ public interface CommunityRepository extends JpaRepository<Community, Long> {
             String type,
             Pageable pageable
     );
-
 }

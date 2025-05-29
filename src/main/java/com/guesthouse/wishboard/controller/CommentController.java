@@ -24,8 +24,10 @@ public class CommentController {
     @GetMapping("/posts/{communityId}/comments")
     public ResponseEntity<?> getComments(
             @PathVariable Long communityId) {
+        System.out.println("Controller hit! communityId = " + communityId);
         return ResponseEntity.ok(commentService.listComments(communityId));
     }
+
 
     /* 댓글 작성 */
     @PostMapping("/posts/{communityId}/comments")

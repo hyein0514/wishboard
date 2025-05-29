@@ -17,8 +17,11 @@ public record PostResponse(
         List<String> imageUrls,        // 추가!
         int likeCount,                 // 추가!
         int commentCount               // 추가!
-)  {
+) {
     public static PostResponse from(Community c) {
+        List<String> imageUrls = (c.getImages() == null) ? List.of()
+                : c.getImages().stream().map(img -> img.getImageUrl()).toList();
+
         return new PostResponse(
                 c.getCommunityId(),
                 c.getType(),
@@ -30,7 +33,7 @@ public record PostResponse(
                 c.getCreatedAt(),                                            // 생성일
                 c.getImages().stream().map(img -> img.getImageUrl()).toList(), // 이미지 URL
                 c.getLikes() != null ? c.getLikes().size() : 0,              // 좋아요 수
-                c.getComments() != null ? c.getComments().size() : 0          // 댓글 수
+                c.getComments() != null ? c.getComments().size() : 0
         );
     }
 }

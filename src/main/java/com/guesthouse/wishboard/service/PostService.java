@@ -4,20 +4,22 @@ import com.guesthouse.wishboard.dto.PostDetailResponse;
 import com.guesthouse.wishboard.dto.PostRequest;
 import com.guesthouse.wishboard.dto.PostResponse;
 import com.guesthouse.wishboard.dto.PostSummaryResponse;
-import com.guesthouse.wishboard.entity.BucketList;
-import com.guesthouse.wishboard.entity.Community;
-import com.guesthouse.wishboard.entity.User;
-import com.guesthouse.wishboard.entity.Like;
+import com.guesthouse.wishboard.entity.*;
 import com.guesthouse.wishboard.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
@@ -31,17 +33,17 @@ public class PostService {
     private final CommunityLikeRepository likeRepo;
     private final BucketListRepository bucketRepo;
     private final JdbcTemplate jdbcTemplate;
+    private final ImageUploadService imageUploadService;
 
     public Page<PostSummaryResponse> listPosts(
-            String communityDiversity,
             String communityType,
+            String boardType,
             Pageable pageable
     ) {
         return communityRepo
-                .findByDiversityAndOptionalType(communityDiversity, communityType, pageable)
+                .findByCommunityTypeAndType(communityType, boardType, pageable)
                 .map(PostSummaryResponse::from);
     }
-
 
     public PostDetailResponse getPost(Long communityId) {
         Community c = communityRepo.findById(communityId)
@@ -56,7 +58,8 @@ public class PostService {
     }
     /* 게시글 작성 */
     @Transactional
-    public PostResponse create(PostRequest req, Long userId) {
+    public PostResponse create(PostRequest req, List<MultipartFile> images, Long userId)
+    {
 
         User author = userRepo.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(
@@ -76,9 +79,28 @@ public class PostService {
                 .user(author)
                 .bucketId(req.bucketId())
                 .bucketList(bucket)
+                .images(new ArrayList<>())
                 .build();
 
         Community saved = communityRepo.save(entity);
+
+        // 이미지 저장 (예: S3, 로컬 등)
+        if (images != null && !images.isEmpty()) {
+            for (MultipartFile file : images) {
+                String imageUrl;
+                try {
+                    imageUrl = imageUploadService.upload(file);
+                } catch (IOException e) {
+                    throw new RuntimeException("이미지 저장 중 오류 발생", e);
+                }
+                Image image = new Image();
+                image.setCommunity(saved);
+                image.setImageUrl(imageUrl);
+                imageRepo.save(image);
+                saved.getImages().add(image);
+            }
+        }
+
         return PostResponse.from(saved);
     }
 

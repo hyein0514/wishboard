@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
+@CrossOrigin(origins = "http://localhost:8081") // http://localhost:8081는 React Native Web 실행 주소
 @Tag(name = "UserController",description = "로그인, 회원가입 관련 API")
 @RestController
 @RequestMapping("/users")

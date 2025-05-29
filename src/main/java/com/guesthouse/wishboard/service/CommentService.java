@@ -17,7 +17,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -53,7 +56,8 @@ public class CommentService {
                 .build());
         Comment saved = commentRepo.save(toSave);
 
-        return CommentResponse.from(saved, 0);
+        return CommentResponse.from(saved, 0, new ArrayList<>());
+
     }
 
     /* 대댓글 작성 */
@@ -81,7 +85,7 @@ public class CommentService {
                 .build());
         Comment reply = commentRepo.save(toReply);
 
-        return CommentResponse.from(reply, 0);
+        return CommentResponse.from(reply, 0, new ArrayList<>());
     }
 
     /* 수정 */
@@ -99,7 +103,7 @@ public class CommentService {
 
         c.setComment(req.content());
         long likes = likeRepo.countByCommentId(commentId);
-        return CommentResponse.from(c, likes);
+        return CommentResponse.from(c, likes, new ArrayList<>());
     }
 
     /* 삭제 (소프트 삭제가 필요 없다면 바로 delete) */
@@ -142,18 +146,38 @@ public class CommentService {
 
     // (기존) 댓글 리스트 조회
     public List<CommentResponse> listComments(Long communityId) {
-        return commentRepo
-                .findByCommunity_CommunityIdAndParentCommentIsNullOrderByCreatedAtAsc(communityId)
-                .stream()
-                .map(c -> CommentResponse.from(
-                        c,
-                        // JpaRepository 대신 JdbcTemplate 으로 카운트
-                        jdbcTemplate.queryForObject(
-                                "SELECT COUNT(*) FROM comment_like WHERE comment_id = ?",
-                                Integer.class, c.getCommentId()
-                        )
-                ))
-                .toList();
+        // 1. 모든 댓글 한 번에 불러오기 (최상위+대댓글 모두)
+        List<Comment> comments = commentRepo.findByCommunity_CommunityIdOrderByCreatedAtAsc(communityId);
+
+        // 2. commentId → CommentResponse 맵핑 (replies는 일단 빈 리스트)
+        Map<Long, CommentResponse> responseMap = new HashMap<>();
+        for (Comment c : comments) {
+            long likeCount = jdbcTemplate.queryForObject(
+                    "SELECT COUNT(*) FROM comment_like WHERE comment_id = ?",
+                    Integer.class, c.getCommentId()
+            );
+            responseMap.put(
+                    c.getCommentId(),
+                    CommentResponse.from(c, likeCount, new ArrayList<>())
+            );
+        }
+
+        // 3. 트리 구조 만들기 (자식 댓글 replies에 넣기)
+        List<CommentResponse> roots = new ArrayList<>();
+        for (Comment c : comments) {
+            CommentResponse dto = responseMap.get(c.getCommentId());
+            if (c.getParentCommentId() == null) {
+                roots.add(dto); // 최상위 댓글
+            } else {
+                CommentResponse parent = responseMap.get(c.getParentCommentId());
+                if (parent != null) {
+                    parent.replies().add(dto); // 부모의 replies에 추가
+                }
+            }
+        }
+
+        return roots; // 최상위 댓글만, 그 안에 대댓글이 계층적으로 들어감
     }
+
 }
 

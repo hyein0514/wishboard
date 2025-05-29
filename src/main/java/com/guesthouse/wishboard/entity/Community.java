@@ -2,7 +2,6 @@ package com.guesthouse.wishboard.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -48,7 +47,7 @@ public class Community {
     private BucketList bucketList;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @OneToMany(mappedBy = "community", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -57,6 +56,7 @@ public class Community {
     @OneToMany(mappedBy = "community",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
+    @Builder.Default
     private List<Image> images = new ArrayList<>();
 
     @OneToMany(mappedBy = "community",

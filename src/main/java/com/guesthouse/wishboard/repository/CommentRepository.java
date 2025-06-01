@@ -16,6 +16,7 @@ public interface CommentRepository extends JpaRepository<Comment,Long> {
     /* 댓글 트리 용 */
     List<Comment> findByCommunity_CommunityIdAndParentCommentIsNullOrderByCreatedAtAsc(Long communityId);
     List<Comment> findByParentComment_CommentIdOrderByCreatedAtAsc(Long parentId);
+    List<Comment> findByCommunity_CommunityIdOrderByCreatedAtAsc(Long communityId);
 
 
     /* 마이페이지 용 */
@@ -53,6 +54,7 @@ public interface CommentRepository extends JpaRepository<Comment,Long> {
     List<Community> findByUserIdAboutPost(
             @Param("userId") Long userId
     );
+
 
 
 }

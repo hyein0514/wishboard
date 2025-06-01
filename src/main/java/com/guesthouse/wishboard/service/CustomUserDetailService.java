@@ -21,6 +21,7 @@ public class CustomUserDetailService implements UserDetailsService{
 
             //DB에서 조회
             User userData = userRepository.findAllByUserId(userId);
+            System.out.println("DB에서 찾은 userData: " + userData);
 
             if (userData == null) {
                 throw new UsernameNotFoundException("해당 사용자를 찾을 수 없습니다: " + userId);

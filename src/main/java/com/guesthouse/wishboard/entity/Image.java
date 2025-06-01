@@ -18,10 +18,10 @@ public class Image {
     @Column(name = "image_url", nullable = false)
     private String imageUrl;
 
-    @Column(name = "community_id", nullable = false)
-    private Long communityId;
+//    @Column(name = "community_id", nullable = false)
+//    private Long communityId;
     
     @ManyToOne
-    @JoinColumn(name = "community_id", insertable = false, updatable = false)
+    @JoinColumn(name = "community_id", nullable = false)
     private Community community;
 }

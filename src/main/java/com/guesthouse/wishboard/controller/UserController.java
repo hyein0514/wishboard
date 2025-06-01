@@ -13,7 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:8081") // http://localhost:8081는 React Native Web 실행 주소
 @Tag(name = "UserController",description = "로그인, 회원가입 관련 API")
@@ -41,6 +43,16 @@ public class UserController {
             }
         }
 
+        
+        @GetMapping("/mypage")
+        public ResponseEntity<Map<String, String>> getMyPageInfo(@AuthenticationPrincipal CustomUserDetail userDetail) {
+            Long userId = userDetail.getUser().getId(); // DB 기준의 PK
+            String nickname = joinService.getNicknameByUserId(userId);
+
+            Map<String, String> response = new HashMap<>();
+            response.put("nickname", nickname);
+            return ResponseEntity.ok(response);
+        }
 
         @PostMapping("/update")
         public ResponseEntity<ApiResponsTemplate<?>> updateUserPreferences(@RequestBody UserDTO dto, @AuthenticationPrincipal CustomUserDetail users) {

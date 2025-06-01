@@ -23,6 +23,13 @@ public class UserService {
         private final NotificationRepository notificationRepository;
         private final CommentRepository commentRepository;
 
+                
+        public String getNicknameByUserId(Long userId) {
+            return userRepository.findById(userId)
+                    .map(User::getNickname)
+                    .orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
+        }
+
         public User joinProcess(UserDTO userDTO) {
             String userId = String.valueOf(userDTO.getUserId());
             String userPw = userDTO.getPassword();

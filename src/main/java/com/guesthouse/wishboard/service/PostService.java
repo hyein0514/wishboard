@@ -66,9 +66,13 @@ public class PostService {
                         HttpStatus.NOT_FOUND, "User not found: " + userId
         ));
 
-        BucketList bucket = bucketRepo.findById(req.bucketId())
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "bucket"));
+        BucketList bucket = null;
+        if (req.bucketId() != null) {
+            bucket = bucketRepo.findById(req.bucketId())
+                    .orElseThrow(() -> new ResponseStatusException(
+                            HttpStatus.NOT_FOUND, "bucket"));
+        }
+
 
         Community entity = Community.builder()
                 .type(req.type())

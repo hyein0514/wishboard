@@ -19,7 +19,8 @@ public record PostDetailResponse(
         LocalDateTime createdAt,
         List<String> imageUrls,
         int likeCount,
-        int commentCount
+        int commentCount,
+        Long bucketId      // ✅ 추가!!
 ) {
     public static PostDetailResponse from(Community c, List<String> imageUrls) {
         return new PostDetailResponse(
@@ -33,8 +34,10 @@ public record PostDetailResponse(
                 c.getCreatedAt(),
                 imageUrls,
                 c.getLikes() != null ? c.getLikes().size() : 0,
-                c.getComments() != null ? c.getComments().size() : 0
+                c.getComments() != null ? c.getComments().size() : 0,
+                c.getBucketId()     // ✅ 마지막 인자로 꼭 추가!
         );
     }
 }
+
 

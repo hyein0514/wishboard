@@ -14,4 +14,5 @@ public class AIRecommendItemDto  {
     private int commentCount;
     private Long communityId;
     private Long bucketId;
+    private String communityDiversity; 
 }

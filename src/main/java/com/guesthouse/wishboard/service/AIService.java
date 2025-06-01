@@ -102,12 +102,13 @@ public class AIService {
                             (c.getLikes() != null ? c.getLikes().size() : 0),
                             (c.getComments() != null ? c.getComments().size() : 0),
                             (c.getCommunityId() != null ? c.getCommunityId() : 0L),
-                            (c.getBucketId() != null ? c.getBucketId() : 0L)
+                            (c.getBucketId() != null ? c.getBucketId() : 0L),
+                            (c.getCommunityDiversity() != null ? c.getCommunityDiversity() : "")
                     ));
                 }
             } else {
                 // 매칭 게시글이 없을 경우 → AI 추천 태그로 대체
-                result.add(new AIRecommendItemDto("AI 추천", keyword, "AI", 0, 0, 0L, 0L));
+                result.add(new AIRecommendItemDto("AI 추천", keyword, "AI", 0, 0, 0L, 0L,""));
             }
         }
         // 결과 포장 후 반환

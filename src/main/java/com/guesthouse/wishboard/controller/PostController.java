@@ -78,6 +78,7 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.CREATED).body(res);
     }
 
+
     // 🟢 새로 추가! application/json (이미지 없이 글만 작성)
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PostResponse> createJson(

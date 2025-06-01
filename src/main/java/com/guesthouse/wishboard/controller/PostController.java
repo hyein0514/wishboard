@@ -59,11 +59,13 @@ public class PostController {
     }
 
     /* ───────── 게시글 작성 ───────── */
+    // 기존 multipart/form-data (이미지 업로드 포함)
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<PostResponse> create(
-            @RequestPart("post") String postJson, // String으로 받기!
+            @RequestPart("post") String postJson,
             @RequestPart(value = "images", required = false) List<MultipartFile> images,
-            Authentication authentication) throws IOException {
+            Authentication authentication
+    ) throws IOException {
 
         System.out.println("post json: " + postJson);
 
@@ -75,6 +77,18 @@ public class PostController {
         PostResponse res = postService.create(req, images, user.getUser().getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(res);
     }
+
+    // 🟢 새로 추가! application/json (이미지 없이 글만 작성)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PostResponse> createJson(
+            @RequestBody PostRequest req,
+            Authentication authentication
+    ) {
+        CustomUserDetail user = (CustomUserDetail) authentication.getPrincipal();
+        PostResponse res = postService.create(req, null, user.getUser().getId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(res);
+    }
+
 
 
 

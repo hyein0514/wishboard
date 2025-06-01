@@ -39,7 +39,7 @@ public class Community {
     @Column(name = "community_diversity", nullable = false)
     private String communityDiversity;
     
-    @Column(name = "bucket_id", nullable = false)
+    @Column(name = "bucket_id", nullable = true)
     private Long bucketId;
 
     @ManyToOne

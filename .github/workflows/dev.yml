@@ -37,6 +37,7 @@ jobs:
             target: /home/${{ secrets.EC2_USER }}/server/demo
       - name: SSH to EC2
         uses: appleboy/ssh-action@v1.2.0
+
         # 기존 jar 파일 삭제 처리 및 실행
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -49,6 +50,7 @@ jobs:
             mv /home/${{ secrets.EC2_USER }}/server/demo/springboot-aws.jar /home/${{ secrets.EC2_USER }}/server/web/springboot-aws.jar
             sudo fuser -k -n tcp 8080 || true
             cd /home/${{ secrets.EC2_USER }}/server/web
+            nohup java -jar springboot-aws.jar > ./ouput.log 2>&1 &
             echo "export OPENAI_API_KEY=${{ secrets.OPEN_API_KEY }}" >> ~/.bashrc
             export OPENAI_API_KEY=${{ secrets.OPEN_API_KEY }}
             nohup /usr/bin/java -jar springboot-aws.jar > ./ouput.log 2>&1 &

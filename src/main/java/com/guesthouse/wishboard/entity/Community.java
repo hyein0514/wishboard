@@ -56,6 +56,7 @@ public class Community {
     @OneToMany(mappedBy = "community",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
+    @Builder.Default
     private List<Image> images = new ArrayList<>();
 
     @OneToMany(mappedBy = "community",

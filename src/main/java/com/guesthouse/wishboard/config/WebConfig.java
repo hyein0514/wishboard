@@ -18,15 +18,6 @@ public class WebConfig implements WebMvcConfigurer {
             .allowedHeaders("*")
             .allowCredentials(true);
   }
-//@Override
-//public void addCorsMappings(CorsRegistry registry) {
-//  registry.addMapping("/**")
-//          // 모든 origin 허용 (개발용)
-//          .allowedOriginPatterns("*")
-//          .allowedMethods("*")
-//          .allowedHeaders("*")
-//          .allowCredentials(true);
-//}
 
   @Override
   public void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -35,4 +26,10 @@ public class WebConfig implements WebMvcConfigurer {
             .addResourceLocations("file:C:/upload/")
             .setCachePeriod(3600);
   }
+            .allowedOrigins("http://localhost:8081") // 또는 "*" (개발용)
+            .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+            .allowedHeaders("*")
+            .allowCredentials(true);
+  }
+
 }

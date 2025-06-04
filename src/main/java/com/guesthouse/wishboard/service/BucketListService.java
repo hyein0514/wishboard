@@ -106,7 +106,7 @@ public class BucketListService {
         BucketList bucketList = bucketListRepository.findByBucketIdAndUser_UserId(id, userId)
                 .orElseThrow(() -> new RuntimeException("버킷리스트가 존재하지 않습니다."));
 
-        bucketList.setStatus("done");
+        bucketList.setStatus("완료");
         bucketList.setAchievedAt(new Date());
         bucketListRepository.save(bucketList);
     }
